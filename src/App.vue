@@ -1,12 +1,31 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  
   <router-view/>
 </template>
+<script setup>
+import { onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { JeuxDeCarte } from '@/class/JeuxDeCarte';
 
+
+const jeuxDeCarte = new JeuxDeCarte ;
+const store = useStore();
+
+onMounted(() => {
+  jeuxDeCarte.creerJeux();
+  store.dispatch('addJeuxDeCarte', jeuxDeCarte.cartes)
+  if (localStorage.getItem('player')) {
+    store.dispatch('resetPlayer')
+  }
+  jeuxDeCarte.melanger()
+})
+</script>
 <style>
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
