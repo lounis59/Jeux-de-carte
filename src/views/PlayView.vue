@@ -47,7 +47,13 @@
     const texte = ref('')
     const showTexte = ref(false)
     const currentIndex = ref(null)
+    let isClickable = false;
     const distrib = () => {
+        isClickable = true;
+        const allCards = document.querySelectorAll('.cardComplete')
+        allCards.forEach((c) => {
+            c.classList.remove('cardVisible');
+        })
         selected.value = true
         showTexte.value = false
         jeux.joueurs.forEach(e => {
@@ -59,11 +65,16 @@
     }
     const selectCard = (card,index, jIndex) => {
         if (jIndex != 0) return;
+        if (!isClickable) return;
+        isClickable = false;
+        console.log(isClickable)
         selected.value = true;
         currentIndex.value = index;
         getCardClass(currentIndex.value , jIndex)
         const randomIndex = Math.floor(Math.random() * 5)
         const cardPlayer2 = jeux.joueurs[1].main[randomIndex]
+        const allCards = document.querySelectorAll('.cardComplete')
+        allCards[randomIndex + 5].classList.add('cardVisible');
         const result = jeux.comparerCarte(card, cardPlayer2.valeur)
         console.log('result', result)
         
@@ -83,6 +94,7 @@
             showTexte.value = true
             texte.value = 'Egaliter ! Ressayer !!'
             nextTick()
+
             gsap.fromTo('.message', {
                 x: -1000 ,
                 opacity: 0
@@ -95,7 +107,7 @@
         else if (result < 0){
             showTexte.value = true
             texte.value = 'Perdu ! DOMMAGE !!'
-            nextTick()
+            
             gsap.fromTo('.message', {
                 x: -1000 ,
                 opacity: 0
@@ -105,6 +117,7 @@
                 duration: 3
             })
         }
+        
     }
     const getCardClass = (index, jindex) => {
         //:class=" selected && currentIndex == index && jIndex == 0? 'select' : '' "
@@ -124,7 +137,7 @@
     })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .main{
     width: 100vw;
     height: auto;
@@ -156,21 +169,21 @@
     perspective: 600px;
     margin: 2px;
     border-radius: 5px;
-}
-.cardComplete{
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: .6s;
-    border-radius: 5px;
-    transform: rotateY(180deg);
 
+    .cardComplete{
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: .6s;
+        border-radius: 5px;
+        transform: rotateY(180deg);
+    }
 }
-.cardContaineur:hover .cardComplete{
-    transform: rotateY(0deg);
+
+.cardVisible{
+    transform: rotateY(0deg) !important;
     background-color: green;
-
 }
 .btn{
     width: 150px;
